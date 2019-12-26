@@ -6,6 +6,8 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import json
+import scrapy
 
 
 class PtpressspiderSpiderMiddleware(object):
@@ -87,7 +89,12 @@ class PtpressspiderDownloaderMiddleware(object):
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
+        if "https://www.ptpress.com.cn/bookinfo/" in response.url:
+            data = json.loads(response.text)
+            if not data.get("success"):
+                raise scrapy.IgnoreRequest
         return response
+
 
     def process_exception(self, request, exception, spider):
         # Called when a download handler or a process_request()
